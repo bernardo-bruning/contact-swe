@@ -1,7 +1,20 @@
 from flask import Flask, jsonify, request
-# In-memory storage for contacts
-contacts = {}
+from flask_sqlalchemy import SQLAlchemy
+from config import Config
+
 app = Flask(__name__)
+app.config.from_object(Config)
+db = SQLAlchemy(app)
+# Define the Contact model
+class Contact(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(50), nullable=False)
+    email = db.Column(db.String(50), nullable=False)
+    phone = db.Column(db.String(20), nullable=False)
+
+    def __repr__(self):
+        return f'<Contact {self.name}>'
+contacts = {}
 
 @app.route('/api/contacts/<int:id>', methods=['GET'])
 def get_contact(id):
